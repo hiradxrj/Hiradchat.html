@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HiraChat</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #090e1c;
+  --panel: #141c30;
+  --purple: #8b5cf6;
+  --blue: #06b6d4;
+  --text: #f8fafc;
+  --muted: #9caac3;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at top, #282052 0%, transparent 55%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+button, input {
+  font: inherit;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 16px;
+  background: #090e1ceF;
+  border-bottom: 1px solid #ffffff12;
+  backdrop-filter: blur(12px);
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  font-size: 25px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+}
+
+.brand {
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.brand span {
+  color: #a78bfa;
+}
+
+.tagline {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+main {
+  width: 100%;
+  max-width: 680px;
+  margin: auto;
+  padding: 20px 12px;
+}
+
+.card {
+  background: #141c30ee;
+  border: 1px solid #ffffff15;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 15px 50px #00000030;
+}
+
+.welcome {
+  padding: 22px;
+}
+
+h2 {
+  margin: 0 0 9px;
+  font-size: 24px;
+}
+
+.description {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+label {
+  display: block;
+  margin: 20px 0 8px;
+  font-size: 13px;
+  color: #dbe4f6;
+}
+
+input {
+  width: 100%;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #35415b;
+  border-radius: 13px;
+  background: #0b1223;
+  color: white;
+  outline: none;
+}
+
+input:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px #8b5cf622;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+}
+
+.primary {
+  color: white;
+  font-weight: bold;
+  background: linear-gradient(135deg, var(--purple), #4f46e5);
+  border-radius: 13px;
+  padding: 14px 17px;
+}
+
+.primary:disabled {
+  opacity: .5;
+}
+
+.full {
+  width: 100%;
+  margin-top: 13px;
+}
+
+.status {
+  padding: 12px;
+  margin-top: 15px;
+  border-radius: 11px;
+  background: #0b1223;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.status.error {
+  color: #fca5a5;
+}
+
+.status.success {
+  color: #86efac;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(110deg, #29204b, #123344);
+  border-bottom: 1px solid #ffffff15;
+}
+
+.room-icon {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  font-size: 23px;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+}
+
+.room-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.room-name {
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.room-description {
+  color: #aebbd0;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  margin-right: 5px;
+}
+
+.small-button {
+  background: #ffffff12;
+  color: white;
+  border: 1px solid #ffffff18;
+  border-radius: 10px;
+  padding: 9px 10px;
+  font-size: 12px;
+}
+
+.messages {
+  height: 54vh;
+  min-height: 280px;
+  max-height: 550px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 16px;
+  background: #0d1425;
+}
+
+.empty {
+  margin: auto;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.9;
+}
+
+.message {
+  max-width: 86%;
+  align-self: flex-start;
+}
+
+.message.mine {
+  align-self: flex-end;
+}
+
+.message-name {
+  color: #a5b4fc;
+  font-size: 11px;
+  margin: 0 5px 6px;
+  overflow-wrap: anywhere;
+}
+
+.bubble {
+  padding: 12px 14px;
+  border: 1px solid #ffffff10;
+  border-radius: 5px 17px 17px 17px;
+  background: #202b43;
+  line-height: 1.5;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.mine .bubble {
+  background: linear-gradient(135deg, #7650cf, #5146a5);
+  border-radius: 17px 5px 17px 17px;
+}
+
+.time {
+  color: #8391aa;
+  font-size: 10px;
+  margin: 5px;
+}
+
+.composer {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px;
+  background: var(--panel);
+  border-top: 1px solid #ffffff12;
+}
+
+.composer input {
+  flex: 1;
+}
+
+.send {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  font-size: 23px;
+  padding: 0;
+}
+
+.footer {
+  padding: 14px;
+  text-align: center;
+  color: #8491a9;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+@media (max-width: 380px) {
+  .welcome {
+    padding: 16px;
+  }
+
+  .messages {
+    padding: 11px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">💬</div>
+  <div>
+    <div class="brand">Hira<span>Chat</span></div>
+    <div class="tagline">Your friends, one conversation away</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- CHOOSE A USERNAME -->
+  <section id="welcome" class="card welcome">
+
+    <h2>Welcome to HiraChat! 👋</h2>
+
+    <p class="description">
+      Enter a username to join the online chat.
+      No email or password required!
+    </p>
+
+    <form id="joinForm">
+      <label for="username">Your username</label>
+
+      <input
+        id="username"
+        type="text"
+        maxlength="20"
+        minlength="2"
+        placeholder="Example: Hirad"
+        autocomplete="nickname"
+        required
+      >
+
+      <button id="joinButton" class="primary full" type="submit">
+        Enter Chat 🚀
+      </button>
+    </form>
+
+    <div id="joinStatus" class="status">
+      Connect to the internet to join.
+    </div>
+
+  </section>
+
+  <!-- CHAT ROOM -->
+  <section id="chat" class="card hidden">
+
+    <div class="chat-header">
+
+      <div class="room-icon">🌎</div>
+
+      <div class="room-info">
+        <div class="room-name">Global Chat</div>
+        <div class="room-description">
+          <span class="dot"></span>
+          Shared live room
+        </div>
+      </div>
+
+      <button id="changeName" class="small-button" type="button">
+        Name
+      </button>
+
+      <button id="leave" class="small-button" type="button">
+        Leave
+      </button>
+
+    </div>
+
+    <div id="messages" class="messages">
+      <div class="empty">
+        💬<br>
+        Connecting to HiraChat...
+      </div>
+    </div>
+
+    <form id="messageForm" class="composer">
+
+      <input
+        id="messageInput"
+        type="text"
+        maxlength="500"
+        placeholder="Write a message..."
+        autocomplete="off"
+        required
+      >
+
+      <button id="send" class="primary send" type="submit">
+        ➤
+      </button>
+
+    </form>
+
+    <div class="footer">
+      🌐 Messages update automatically for everyone.<br>
+      Don't share passwords or private information.
+    </div>
+
+  </section>
+
+</main>
+
+<!-- Firebase libraries -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+
+<script>
+/*
+================================================
+HIRACHAT CONFIGURATION
+
+Replace the example values with your Firebase
+project's real web configuration.
+================================================
+*/
+
+const firebaseConfig = {
+  apiKey: "PASTE_YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL: "PASTE_YOUR_DATABASE_URL",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+/* App logic */
+
+const $ = id => document.getElementById(id);
+
+let auth = null;
+let db = null;
+let user = null;
+let username = "";
+let messageRef = null;
+let messageCallback = null;
+let busy = false;
+let joinBusy = false;
+
+function status(message, error = false) {
+  $("joinStatus").textContent = message;
+  $("joinStatus").className =
+    "status" + (error ? " error" : "");
+}
+
+function chatStatus(message) {
+  console.log("HiraChat:", message);
+}
+
+function firebaseReady() {
+  return firebaseConfig.apiKey !== "PASTE_YOUR_API_KEY" &&
+         firebaseConfig.projectId !== "YOUR_PROJECT_ID" &&
+         firebaseConfig.databaseURL.startsWith("https://");
+}
+
+function errorText(error) {
+  console.error(error);
+
+  const code = error && error.code ? error.code : "";
+
+  if (code.includes("network")) {
+    return "Internet connection failed. Please try again.";
+  }
+
+  if (code.includes("permission-denied") ||
+      code.includes("PERMISSION_DENIED")) {
+    return "Access denied. Check your Firebase database rules.";
+  }
+
+  return "Could not connect. Check your Firebase setup and internet.";
+}
+
+function stopListening() {
+  if (messageRef && messageCallback) {
+    messageRef.off("value", messageCallback);
+  }
+
+  messageRef = null;
+  messageCallback = null;
+}
+
+/* Connect anonymously: no email/password needed */
+
+if (firebaseReady()) {
+  try {
+    firebase.initializeApp(firebaseConfig);
+
+    auth = firebase.auth();
+    db = firebase.database();
+
+    auth.signInAnonymously()
+      .then(() => {
+        status("Connected! Enter your username to join.", false);
+      })
+      .catch(error => {
+        status(errorText(error), true);
+      });
+
+  } catch (error) {
+    status(errorText(error), true);
+  }
+} else {
+  status(
+    "Setup required: add your Firebase configuration in the HTML code.",
+    true
+  );
+}
+
+/* Enter the room */
+
+$("joinForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  if (joinBusy) return;
+
+  const name = $("username").value.trim();
+
+  if (name.length < 2 || name.length > 20) {
+    status("Username must be 2–20 characters.", true);
+    return;
+  }
+
+  if (!auth || !db || !auth.currentUser) {
+    status(
+      "Not connected yet. Check your Firebase setup and internet.",
+      true
+    );
+    return;
+  }
+
+  joinBusy = true;
+  $("joinButton").disabled = true;
+  $("joinButton").textContent = "Connecting...";
+
+  try {
+    user = auth.currentUser;
+    username = name;
+
+    $("welcome").classList.add("hidden");
+    $("chat").classList.remove("hidden");
+
+    startListening();
+
+  } catch (error) {
+    status(errorText(error), true);
+  } finally {
+    joinBusy = false;
+    $("joinButton").disabled = false;
+    $("joinButton").textContent = "Enter Chat 🚀";
+  }
+});
+
+/* Listen for messages from every connected user */
+
+function startListening() {
+  stopListening();
+
+  if (!user || !db) return;
+
+  const box = $("messages");
+
+  box.replaceChildren();
+
+  const loading = document.createElement("div");
+  loading.className = "empty";
+  loading.textContent = "Loading messages...";
+  box.appendChild(loading);
+
+  messageRef = db.ref("messages").limitToLast(100);
+
+  messageCallback = snapshot => {
+    const wasNearBottom =
+      box.scrollHeight - box.scrollTop - box.clientHeight < 100;
+
+    box.replaceChildren();
+
+    if (!snapshot.exists()) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "💬 Be the first to say hello!";
+      box.appendChild(empty);
+      return;
+    }
+
+    snapshot.forEach(child => {
+      const data = child.val();
+
+      if (!data ||
+          typeof data.text !== "string" ||
+          typeof data.uid !== "string") {
+        return;
+      }
+
+      const mine = data.uid === user.uid;
+
+      const item = document.createElement("div");
+      item.className = "message" + (mine ? " mine" : "");
+
+      const name = document.createElement("div");
+      name.className = "message-name";
+      name.textContent = mine
+        ? username + " (You)"
+        : String(data.name || "Guest").slice(0, 20);
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.textContent = data.text.slice(0, 500);
+
+      const time = document.createElement("div");
+      time.className = "time";
+
+      if (typeof data.time === "number") {
+        time.textContent = new Date(data.time).toLocaleTimeString(
+          [],
+          { hour: "2-digit", minute: "2-digit" }
+        );
+      } else {
+        time.textContent = "Just now";
+      }
+
+      item.append(name, bubble, time);
+      box.appendChild(item);
+    });
+
+    if (wasNearBottom) {
+      box.scrollTop = box.scrollHeight;
+    }
+  };
+
+  messageRef.on(
+    "value",
+    messageCallback,
+    error => {
+      chatStatus(errorText(error));
+      console.error(error);
+    }
+  );
+}
+
+/* Send messages */
+
+$("messageForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  if (busy) return;
+
+  if (!user || !db) {
+    alert("You are not connected. Please reconnect.");
+    return;
+  }
+
+  const input = $("messageInput");
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  busy = true;
+  $("send").disabled = true;
+
+  try {
+    await db.ref("messages").push().set({
+      uid: user.uid,
+      name: username,
+      text: text.slice(0, 500),
+      time: firebase.database.ServerValue.TIMESTAMP
+    });
+
+    input.value = "";
+    input.focus();
+
+  } catch (error) {
+    alert(errorText(error));
+  } finally {
+    busy = false;
+    $("send").disabled = false;
+  }
+});
+
+/* Change username */
+
+$("changeName").addEventListener("click", () => {
+  const next = prompt("Enter your new username:", username);
+
+  if (next === null) return;
+
+  const name = next.trim();
+
+  if (name.length < 2 || name.length > 20) {
+    alert("Username must be 2–20 characters.");
+    return;
+  }
+
+  username = name;
+  $("username").value = name;
+  alert("Your new username will appear on your next message.");
+});
+
+/* Leave chat */
+
+$("leave").addEventListener("click", () => {
+  stopListening();
+
+  $("chat").classList.add("hidden");
+  $("welcome").classList.remove("hidden");
+
+  $("messages").replaceChildren();
+
+  chatStatus("You left the chat.");
+});
+</script>
+
+</body>
+</html>
